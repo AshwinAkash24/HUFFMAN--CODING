@@ -29,61 +29,53 @@ Reference Number:212223230024
 ```
 ## Get the input String
 ```
-string = 'Prajin'
-class NodeTree(object):
-    def __init__(self, left=None, right=None): 
-        self.left = left
-        self.right=right
-    def children(self):
-        return (self.left,self.right)
-    def nodes (self):
-        return (self.left,self.right)
-    def __str__(self):
-        return '%s %s' %(self.left,self.right)
+input_string = "Ashwin Akash"
 ```
 
+# Calculate the frquency of each character
+```
+frequency = {}
+for char in input_string:
+    if char in frequency:
+        frequency[char] += 1
+    else:
+        frequency[char] = 1
+```
 # Create tree nodes
 ```
-def huffman_code_tree (node, left=True, binString=''):
-    if type(node) is str:
-        return {node: binString}
-    (l, r) = node.children()
-    d = dict()
-    d.update(huffman_code_tree (l, True, binString + '0'))
-    d.update(huffman_code_tree (r, False, binString + '1'))
-    return d
+nodes = [[char, freq] for char, freq in frequency.items()]
 ```
+# Implementation of huffman coding
+```
+while len(nodes) > 1:
+    nodes = sorted(nodes, key=lambda x: x[1])
+    left = nodes.pop(0)
+    right = nodes.pop(0)
+ 
+    new_node = [[left, right], left[1] + right[1]]
+    nodes.append(new_node)
+huffman_tree = nodes[0]
+```
+# Generate Huffman Code
+```
+huffman_codes = {}
 
-# Main function to implement huffman coding
-```
-freq = {}
-for c in string:
-    if c in freq:
-        freq[c] += 1
-    else:
-        freq[c] = 1
-freq = sorted(freq.items(), key=lambda x: x[1], reverse=True)
-nodes=freq
-```
-# Calculate frequency of occurrence
-```
-while len(nodes)>1:
-    (key1,c1)=nodes[-1]
-    (key2,c2)=nodes[-2]
-    nodes = nodes[:-2]
-    node = NodeTree (key1, key2)
-    nodes.append((node,c1 + c2))
-    nodes = sorted (nodes, key=lambda x: x[1], reverse=True)
+def generate_codes(tree, code=""):
+    if isinstance(tree[0], str):  # If it's a leaf node
+        huffman_codes[tree[0]] = code
+    else:  
+        generate_codes(tree[0][0], code + "0")
+        generate_codes(tree[0][1], code + "1")
+
+generate_codes(huffman_tree)
 ```
 
 # Print the characters and its huffmancode
 
-```
-huffmanCode=huffman_code_tree(nodes[0][0])
-print(' Char | Huffman code ') 
-print('----------------------')
-for (char, frequency) in freq:
-    print('%-4r|%12s'%(char,huffmanCode[char]))
+```print("Character | Huffman Code")
+print("-------------------------")
+for char, code in huffman_codes.items():
+    print(f"    {char}    |    {code}")
 ```
 
 ## Output:
